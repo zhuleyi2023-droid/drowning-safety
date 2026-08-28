@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="description" content="亲子防溺水安全课堂，情景卡牌闯关，教会孩子避开隐形溺水风险">
+<title>亲子防溺水安全课堂</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 首页 -->
+  <section id="page-home" class="page active">
+    <div class="home-bg">
+      <img src="images/cover.png" alt="cover" class="home-cover">
+      <div class="home-content">
+        <h1 class="home-title">亲子防溺水安全课堂</h1>
+        <p class="home-subtitle">情景卡牌闯关</p>
+        <p class="home-desc">从真实事故复盘</p>
+        <p class="home-desc2">教会孩子避开隐形溺水风险</p>
+        <div class="home-tips">
+          <p>很多溺水不在深水区、不在野外</p>
+          <p>而在家长眼前、在浅水区、在打闹一瞬间</p>
+        </div>
+        <p class="home-slogan">最好的安全教育，是提前看见危险</p>
+        <button class="btn-primary" id="btn-start">开始安全闯关</button>
+        <button class="btn-restart" id="btn-restart" style="display:none">🔄 重新开始</button>
+      </div>
+      <p class="home-footer">【纯公益免费】基于溺水安全研究总结制作 | 旨在普及家庭水域安全教育</p>
+    </div>
+  </section>
+
+  <!-- 加载页 -->
+  <section id="page-loading" class="page">
+    <div class="loading-box">
+      <div class="loading-wave"><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="loading-text">正在开启儿童水域安全认知系统…</p>
+      <p class="loading-sub">适合 3–8 岁孩子亲子学习</p>
+    </div>
+  </section>
+
+  <!-- 规则弹窗 -->
+  <div id="modal-rules" class="modal">
+    <div class="modal-content rules-content">
+      <h2 class="rules-title">游戏规则</h2>
+      <ul class="rules-list">
+        <li><span class="rule-num">1</span>滑动切换 6 大水场景</li>
+        <li><span class="rule-num">2</span>选择正确 / 错误行为</li>
+        <li><span class="rule-num">3</span>答对获得安全小星星</li>
+        <li><span class="rule-num">4</span>全部通关解锁【安全小卫士证书】</li>
+      </ul>
+      <button class="btn-primary" id="btn-start-game">开始学习</button>
+      <button class="btn-restart-small" id="btn-restart-modal" style="display:none">🔄 清除进度重新玩</button>
+    </div>
+  </div>
+
+  <!-- 游戏主页面 -->
+  <section id="page-game" class="page">
+    <div class="game-header"><span class="game-header-text">玩水有规则，安全无小事</span></div>
+    <div class="game-progress">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="stars-box"><span class="star-icon">⭐</span><span id="star-count">0</span><span class="star-total">/6</span></div>
+    </div>
+    <div class="game-scene" id="game-scene">
+      <div class="scene-card" id="scene-card">
+        <img id="scene-img" src="" alt="scene" class="scene-img">
+        <div class="scene-info"><span class="scene-tag" id="scene-tag">场景 1</span><h3 class="scene-name" id="scene-name"></h3></div>
+        <div class="scene-question"><p id="scene-question"></p></div>
+      </div>
+      <div class="scene-nav">
+        <button class="nav-btn" id="btn-prev">◀</button>
+        <div class="scene-dots" id="scene-dots"></div>
+        <button class="nav-btn" id="btn-next">▶</button>
+      </div>
+    </div>
+    <div class="game-actions">
+      <button class="btn-wrong" id="btn-wrong">
+        <span class="btn-big-icon" id="wrong-icon">🏃</span>
+        <span class="btn-icon">❌</span>
+        <span class="btn-label" id="wrong-label">危险行为</span>
+      </button>
+      <button class="btn-right" id="btn-right">
+        <span class="btn-big-icon" id="right-icon">🧘</span>
+        <span class="btn-icon">✅</span>
+        <span class="btn-label" id="right-label">安全行为</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 对错弹窗 -->
+  <div id="modal-result" class="modal">
+    <div class="modal-content result-content" id="result-content">
+      <div class="result-icon" id="result-icon"></div>
+      <h3 class="result-title" id="result-title"></h3>
+      <div class="result-body">
+        <p class="result-text" id="result-text"></p>
+        <p class="result-text2" id="result-text2"></p>
+        <div class="result-rules" id="result-rules">
+          <p class="result-rule-title" id="result-rule-title"></p>
+          <ul class="result-rule-list" id="result-rule-list"></ul>
+        </div>
+      </div>
+      <button class="btn-voice" id="btn-voice" style="display:none">🔊 再听一遍</button>
+      <button class="btn-primary" id="btn-result-continue"></button>
+    </div>
+  </div>
+
+  <!-- 快问快答挑战页 -->
+  <section id="page-quiz" class="page">
+    <div class="quiz-header">
+      <h2 class="quiz-title">🎯 终极挑战</h2>
+      <p class="quiz-sub">判断下面的行为是安全还是危险！</p>
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      </div>
+      <p class="quiz-count" id="quiz-count">第 1 / 6 题</p>
+    </div>
+    <div class="quiz-card" id="quiz-card">
+      <div class="quiz-icon" id="quiz-icon">🏃‍♂️💨</div>
+      <p class="quiz-question" id="quiz-question">在泳池边追逐打闹</p>
+      <p class="quiz-hint" id="quiz-hint">👆 点击下面的按钮判断</p>
+    </div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <div class="quiz-actions" id="quiz-actions">
+      <button class="btn-quiz-safe" id="btn-quiz-safe">👍 安全</button>
+      <button class="btn-quiz-danger" id="btn-quiz-danger">👎 危险</button>
+    </div>
+    <div class="quiz-next" id="quiz-next" style="display:none">
+      <button class="btn-primary" id="btn-quiz-next">下一题</button>
+    </div>
+    <div class="quiz-btns-bottom">
+      <button class="btn-back" id="btn-quiz-home">🏠 返回首页</button>
+    </div>
+  </section>
+
+  <!-- 总结页 -->
+  <section id="page-summary" class="page">
+    <div class="summary-scroll">
+      <div class="summary-hero">
+        <div class="summary-trophy">🏆</div>
+        <h2 class="summary-title">恭喜通关！</h2>
+        <p class="summary-sub">你已经是安全小卫士啦！</p>
+      </div>
+      <div class="stars-display">
+        <span class="big-star">⭐</span><span class="big-star">⭐</span><span class="big-star">⭐</span>
+        <span class="big-star">⭐</span><span class="big-star">⭐</span><span class="big-star">⭐</span>
+      </div>
+      <div class="summary-child">
+        <p class="summary-child-title">你学会了：</p>
+        <div class="child-skills">
+          <span class="skill-tag">🚫 不打闹</span>
+          <span class="skill-tag">🚫 不冲撞</span>
+          <span class="skill-tag">🏃 不近险</span>
+          <span class="skill-tag">🙅 不乱救</span>
+        </div>
+      </div>
+      <div class="summary-parent">
+        <h3 class="parent-title">📋 家长提醒</h3>
+        <div id="parent-tips"></div>
+      </div>
+      <div class="summary-btns">
+        <button class="btn-cert" id="btn-cert">🏆 领取奖状</button>
+        <button class="btn-share" id="btn-share-summary">📤 分享给小伙伴</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 证书页 -->
+  <section id="page-certificate" class="page">
+    <div class="cert-container">
+      <div class="cert-card" id="cert-card">
+        <img src="images/certificate-bg.png" class="cert-bg">
+        <div class="cert-text">
+          <div class="cert-big-star">🏆</div>
+          <h2 class="cert-title">安全小卫士</h2>
+          <p class="cert-sub">荣誉称号</p>
+          <div class="cert-name-box">
+            <p class="cert-label">小朋友姓名</p>
+            <input type="text" class="cert-input" id="cert-name-input" placeholder="输入名字" maxlength="6">
+          </div>
+          <div class="cert-stars">⭐⭐⭐⭐⭐⭐</div>
+          <p class="cert-date" id="cert-date"></p>
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-save-cert">📸 保存奖状到手机</button>
+      <button class="btn-share" id="btn-share-cert">📤 分享给小伙伴</button>
+      <button class="btn-back" id="btn-back-summary">返回</button>
+    </div>
+  </section>
+
+  <!-- 分享页 -->
+  <section id="page-share" class="page">
+    <div class="share-content">
+      <h2 class="share-title">儿童防溺水安全系统</h2>
+      <button class="btn-primary" id="btn-share-now">转发分享｜守护更多孩子</button>
+      <button class="btn-back" id="btn-back-home">返回首页</button>
+    </div>
+  </section>
+
+</div>
+<script src="data/text.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
