@@ -15,6 +15,7 @@ function playWin() { try { winAudio.currentTime = 0; winAudio.play().catch(funct
 /* ===== 语音合成 - 童声优化 ===== */
 var synth = window.speechSynthesis;
 var currentVoice = null;
+var voiceReady = false;
 
 function initVoice() {
   if (!synth) return;
@@ -22,6 +23,7 @@ function initVoice() {
   for (var i = 0; i < voices.length; i++) {
     if (voices[i].lang.indexOf('zh') === 0) { currentVoice = voices[i]; break; }
   }
+  voiceReady = true;
 }
 if (synth) {
   if (synth.onvoiceschanged !== undefined) { synth.onvoiceschanged = initVoice; }
@@ -29,12 +31,31 @@ if (synth) {
 }
 
 function speak(text) {
-  if (!synth || !text) return;
-  synth.cancel();
-  var u = new SpeechSynthesisUtterance(text);
-  u.lang = 'zh-CN'; u.rate = 1.15; u.pitch = 1.6; u.volume = 1.0;
-  if (currentVoice) u.voice = currentVoice;
-  synth.speak(u);
+  if (!synth || !text || !voiceReady || !state.voiceEnabled) return;
+  try {
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN'; u.rate = 1.15; u.pitch = 1.6; u.volume = 1.0;
+    if (currentVoice) u.voice = currentVoice;
+    synth.speak(u);
+  } catch(e) {}
+}
+
+/* 首次启用语音（需要用户交互） */
+function enableVoice() {
+  if (!synth) return;
+  state.voiceEnabled = true;
+  voiceReady = true;
+  initVoice();
+  /* 测试播放一个静音来解锁音频上下文 */
+  var testU = new SpeechSynthesisUtterance('');
+  testU.volume = 0;
+  synth.speak(testU);
+  /* 隐藏开启按钮 */
+  var btn = $('btn-enable-voice');
+  if (btn) btn.style.display = 'none';
+  var btn2 = $('btn-enable-voice-modal');
+  if (btn2) btn2.style.display = 'none';
 }
 
 /* ===== 状态管理 ===== */
@@ -117,6 +138,12 @@ function checkProgress() {
 }
 
 $('btn-start').addEventListener('click', function() { checkProgress(); showModal('modal-rules'); });
+
+/* 开启声音按钮 */
+var voiceBtn = $('btn-enable-voice');
+if (voiceBtn) voiceBtn.addEventListener('click', function() { enableVoice(); this.textContent = '🔊 声音已开启'; });
+var voiceBtnModal = $('btn-enable-voice-modal');
+if (voiceBtnModal) voiceBtnModal.addEventListener('click', function() { enableVoice(); this.textContent = '🔊 声音已开启'; });
 $('btn-restart').addEventListener('click', function() {
   if (confirm('确定要重新开始吗？之前的进度会清空哦！')) { clearProgress(); showModal('modal-rules'); }
 });
