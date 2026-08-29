@@ -16,46 +16,71 @@ function playWin() { try { winAudio.currentTime = 0; winAudio.play().catch(funct
 var synth = window.speechSynthesis;
 var currentVoice = null;
 var voiceReady = false;
+var voicesLoaded = false;
 
-function initVoice() {
+function loadVoices() {
   if (!synth) return;
   var voices = synth.getVoices();
+  if (voices.length === 0) return;
+  voicesLoaded = true;
   for (var i = 0; i < voices.length; i++) {
-    if (voices[i].lang.indexOf('zh') === 0) { currentVoice = voices[i]; break; }
+    var v = voices[i];
+    if (v.lang && v.lang.indexOf('zh') === 0) {
+      currentVoice = v;
+      break;
+    }
   }
   voiceReady = true;
 }
+
 if (synth) {
-  if (synth.onvoiceschanged !== undefined) { synth.onvoiceschanged = initVoice; }
-  initVoice();
+  loadVoices();
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = function() {
+      if (!voicesLoaded) loadVoices();
+    };
+  }
+  /* 某些浏览器需要延迟加载 voices */
+  setTimeout(function() {
+    if (!voicesLoaded) loadVoices();
+  }, 500);
 }
 
 function speak(text) {
-  if (!synth || !text || !voiceReady || !state.voiceEnabled) return;
+  if (!synth || !text) return;
   try {
     synth.cancel();
     var u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN'; u.rate = 1.15; u.pitch = 1.6; u.volume = 1.0;
+    u.lang = 'zh-CN';
+    u.rate = 1.1;
+    u.pitch = 1.5;
+    u.volume = 1.0;
     if (currentVoice) u.voice = currentVoice;
     synth.speak(u);
-  } catch(e) {}
+  } catch(e) { console.log('speak error:', e); }
 }
 
 /* 首次启用语音（需要用户交互） */
 function enableVoice() {
-  if (!synth) return;
+  if (!synth) {
+    alert('您的浏览器不支持语音播放，请使用 Chrome 或 Safari');
+    return;
+  }
   state.voiceEnabled = true;
   voiceReady = true;
-  initVoice();
-  /* 测试播放一个静音来解锁音频上下文 */
-  var testU = new SpeechSynthesisUtterance('');
-  testU.volume = 0;
-  synth.speak(testU);
-  /* 隐藏开启按钮 */
+  /* 用实际内容解锁语音引擎 */
+  var unlockU = new SpeechSynthesisUtterance('声音已开启');
+  unlockU.lang = 'zh-CN';
+  unlockU.rate = 1.1;
+  unlockU.pitch = 1.5;
+  unlockU.volume = 1.0;
+  if (currentVoice) unlockU.voice = currentVoice;
+  synth.speak(unlockU);
+  /* 更新按钮状态 */
   var btn = $('btn-enable-voice');
-  if (btn) btn.style.display = 'none';
+  if (btn) { btn.textContent = '🔊 声音已开启'; btn.style.animation = 'none'; }
   var btn2 = $('btn-enable-voice-modal');
-  if (btn2) btn2.style.display = 'none';
+  if (btn2) { btn2.textContent = '🔊 声音已开启'; btn2.style.animation = 'none'; }
 }
 
 /* ===== 状态管理 ===== */
