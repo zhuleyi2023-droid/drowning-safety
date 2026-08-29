@@ -334,3 +334,29 @@ body {
 
 .quiz-next { text-align: center; margin-bottom: 16px; }
 .quiz-btns-bottom { text-align: center; }
+
+/* ===== 开启声音按钮 ===== */
+.btn-voice-enable {
+  display: block;
+  width: 70%;
+  max-width: 260px;
+  margin: 12px auto 0;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+  border: 2px solid var(--primary);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: var(--transition);
+  animation: voicePulse 2s ease-in-out infinite;
+}
+.btn-voice-enable:active {
+  transform: scale(0.95);
+  background: var(--primary-light);
+}
+@keyframes voicePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(91,164,207,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(91,164,207,0); }
+}
